@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RetailInventoryAPI.Models;
+using RetailInventoryAPI.Services;
 using System.Collections.Generic;
 using System.Linq;
 namespace RetailInventoryAPI.Controllers
@@ -9,22 +10,24 @@ namespace RetailInventoryAPI.Controllers
     [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
-        private static List<Product> _products = new List<Product>
+        private readonly IProductService _productService;
+
+        public ProductsController(IProductService productService)
         {
-            new Product { Id = 1, Name = "Gaming Mouse", Quantity = 10 },
-            new Product { Id = 2, Name = "Keyboard", Quantity = 5 }
-        };
+            _productService = productService;
+        }
 
         [HttpGet]
         public ActionResult<List<Product>> GetProducts()
         {
-            return Ok(_products);
+            var products = _productService.GetAllProducts();
+            return Ok(products);
         }
 
         [HttpGet("{id}")]
         public ActionResult<Product> GetProduct(int id)
         {
-            Product product = _products.FirstOrDefault(x => x.Id == id);
+            var product = _productService.GetProductById(id);
             if (product == null)
             {
                 return NotFound();
@@ -37,51 +40,42 @@ namespace RetailInventoryAPI.Controllers
         [HttpPost]
         public ActionResult<Product> CreateProduct(Product product)
         {
-
-            int NewId;
-
-            if (_products.Any())
+            if (string.IsNullOrWhiteSpace(product.Name) || product.Quantity < 0)
             {
-                NewId = _products.Max(x => x.Id) + 1;
+                return BadRequest("Invalid product data.");
             }
-            else
-            {
-                NewId = 1;
-            }
-            product.Id = NewId;
-            _products.Add(product);
-
-            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+            var created = _productService.CreateProduct(product);
+            return CreatedAtAction(nameof(GetProduct), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
         public ActionResult<Product> UpdateProduct(int id, Product updatedProduct)
         {
-            Product product = _products.FirstOrDefault(x => x.Id == id);
+            if (string.IsNullOrWhiteSpace(updatedProduct.Name) || updatedProduct.Quantity < 0)
+            {
+                return BadRequest("Invalid product data.");
+            }
 
-            if (product == null)
+            var updated = _productService.UpdateProduct(id,updatedProduct);
+            if (updated == null)
             {
                 return NotFound();
 
             }
 
-            product.Name = updatedProduct.Name;
-            product.Quantity = updatedProduct.Quantity;
-
-            return Ok(product);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
         public ActionResult DeleteProduct(int id)
         {
-            Product product = _products.FirstOrDefault(x => x.Id == id);
-
-            if (product == null)
+            var deleted = _productService.DeleteProduct(id);
+            if (!deleted)
             {
                 return NotFound();
             }
-            _products.Remove(product);
             return NoContent();
         }
+      
     }
 }
