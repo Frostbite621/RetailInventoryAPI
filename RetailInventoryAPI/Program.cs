@@ -1,5 +1,9 @@
 using RetailInventoryAPI.Services;
+using Microsoft.EntityFrameworkCore;
+using RetailInventoryAPI.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 
@@ -8,7 +12,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddSingleton<IProductService, ProductService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
