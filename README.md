@@ -77,6 +77,13 @@ Unit tests are implemented using xUnit to validate core service logic, including
 - Handling of non-existent data
 
 ---
+## 📸 Preview
+
+### GET /api/products
+![Swagger GET](docs/swagger-get.png)
+
+### POST /api/products
+![Swagger POST](docs/swagger-post.png)
 
 ## ▶️ How To Run
 
