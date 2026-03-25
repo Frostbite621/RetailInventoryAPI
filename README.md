@@ -14,7 +14,7 @@ This project focuses on backend development fundamentals such as layered archite
 - .NET 8
 - ASP.NET Core Web API
 - LINQ
-- In-Memory Data Store
+- In-Memory Repository (for development/testing)
 - Swagger (OpenAPI)
 - xUnit (Unit Testing)
 
@@ -77,6 +77,10 @@ Unit tests are implemented using xUnit to validate core service logic, including
 - Handling of non-existent data
 
 ---
+## 💡 Project Purpose
+
+This project was built as part of a backend development learning progression to simulate real-world API design patterns, including layered architecture, separation of concerns, and testable service logic.
+
 ## 📸 Preview
 
 ### GET /api/products
