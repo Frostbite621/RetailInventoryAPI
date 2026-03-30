@@ -1,4 +1,5 @@
-﻿using RetailInventoryAPI.Models;
+﻿using RetailInventoryAPI.DTOs;
+using RetailInventoryAPI.Models;
 
 namespace RetailInventoryAPI.Services
 {
@@ -8,7 +9,6 @@ namespace RetailInventoryAPI.Services
         Product? GetProductById(int id);
         Product CreateProduct(Product product);
         Product? UpdateProduct(int id, Product updatedProduct);
-
         bool DeleteProduct(int id);
     }
 }

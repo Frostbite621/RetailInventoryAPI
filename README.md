@@ -1,96 +1,113 @@
-# 📦 RetailInventoryAPI
+# RetailInventoryAPI
 
-## 🚀 Overview
-
-RetailInventoryAPI is a RESTful Web API built with C# and ASP.NET Core (.NET 8) that implements full CRUD functionality for managing product inventory.
-
-This project focuses on backend development fundamentals such as layered architecture, API design, dependency separation, and testable code structure.
+A RESTful backend API built with ASP.NET Core (.NET 8) for managing retail inventory data. This project demonstrates clean architecture principles, database integration using Entity Framework Core, and automated testing with xUnit.
 
 ---
 
-## 🛠 Tech Stack
+## 🚀 Features
 
-- C#
-- .NET 8
-- ASP.NET Core Web API
-- LINQ
-- In-Memory Repository (for development/testing)
-- Swagger (OpenAPI)
-- xUnit (Unit Testing)
+- Full CRUD operations for products  
+- PostgreSQL database integration using Entity Framework Core  
+- Clean layered architecture (Controller → Service → DbContext)  
+- Swagger/OpenAPI for API testing and documentation  
+- Unit tests using xUnit with in-memory database  
 
 ---
 
-## 🏗 Architecture
+## 🛠️ Tech Stack
 
-This project follows a layered architecture to promote separation of concerns and maintainability:
-
-Controller → Service → Data (Repository)
-
-- **Controllers** handle HTTP requests and responses  
-- **Services** contain business logic  
-- **Data/Repository** manages data access  
-
----
-
-## 📚 Features
-
-- Retrieve all products
-- Retrieve product by ID
-- Create new product
-- Update existing product
-- Delete product
-- Proper HTTP status codes (200, 201, 204, 404)
-- Clean RESTful routing conventions
+- C#  
+- ASP.NET Core (.NET 8)  
+- Entity Framework Core  
+- PostgreSQL (Npgsql)  
+- xUnit (Testing)  
+- Swagger (Swashbuckle)  
 
 ---
 
-## 🌐 API Endpoints
+## 📁 Project Structure
 
-| Method | Endpoint | Description |
-|--------|----------|------------|
-| GET | `/api/products` | Retrieve all products |
-| GET | `/api/products/{id}` | Retrieve a specific product |
-| POST | `/api/products` | Create a new product |
-| PUT | `/api/products/{id}` | Update an existing product |
-| DELETE | `/api/products/{id}` | Delete a product |
+```
+RetailInventoryAPI/
+│
+├── Controllers/        # API endpoints
+├── Services/           # Business logic
+├── Data/               # DbContext and database setup
+├── Models/             # Domain models
+├── DTOs/               # Data transfer objects (in progress)
+├── Migrations/         # EF Core migrations
+│
+RetailInventoryAPI.Tests/
+├── Unit tests for ProductService using in-memory database
+```
 
 ---
 
-## 🧠 Key Backend Concepts Practiced
+## 📌 API Endpoints
 
-- RESTful API design
-- Dependency separation (Controller → Service → Repository)
-- Model binding (JSON → C# objects)
-- ActionResult and HTTP status handling
-- LINQ querying (FirstOrDefault, Max, Any)
-- In-memory persistence simulation
-- Clean project structure
+| Method | Endpoint            | Description                 |
+|--------|--------------------|-----------------------------|
+| GET    | /api/products      | Get all products            |
+| GET    | /api/products/{id} | Get product by ID           |
+| POST   | /api/products      | Create a new product        |
+| PUT    | /api/products/{id} | Update an existing product  |
+| DELETE | /api/products/{id} | Delete a product            |
 
 ---
 
 ## 🧪 Testing
 
-Unit tests are implemented using xUnit to validate core service logic, including:
+Unit tests are implemented using xUnit and EF Core’s in-memory database provider.
 
-- Product creation behavior
-- Retrieval by ID
-- Handling of non-existent data
+To run tests:
+
+```
+dotnet test
+```
 
 ---
-## 💡 Project Purpose
 
-This project was built as part of a backend development learning progression to simulate real-world API design patterns, including layered architecture, separation of concerns, and testable service logic.
+## ⚙️ Running the Project
 
-## 📸 Preview
+1. Update your connection string in `appsettings.json`:
 
-### GET /api/products
-![Swagger GET](docs/swagger-get.png)
+```
+"ConnectionStrings": {
+  "DefaultConnect": "Host=localhost;Port=5432;Database=RetailInventoryDb;Username=postgres;Password=YOURPASSWORD"
+}
+```
 
-### POST /api/products
-![Swagger POST](docs/swagger-post.png)
+2. Apply migrations:
 
-## ▶️ How To Run
+```
+dotnet ef database update
+```
 
-```bash
-dotnet build
-dotnet run
+3. Run the API:
+
+```
+dotnet run --project RetailInventoryAPI
+```
+
+4. Open Swagger:
+
+```
+http://localhost:5000/swagger
+```
+
+---
+
+## 📈 Future Improvements
+
+- Implement DTO mapping across all endpoints  
+- Add input validation (FluentValidation or Data Annotations)  
+- Introduce repository pattern  
+- Add authentication (JWT)  
+- Improve error handling and logging  
+
+---
+
+## 👨‍💻 Author
+
+Tyler Kelley  
+Aspiring Backend Developer  
