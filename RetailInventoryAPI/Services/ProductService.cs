@@ -1,5 +1,7 @@
 ﻿using RetailInventoryAPI.Models;
 using RetailInventoryAPI.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace RetailInventoryAPI.Services
 {
     public class ProductService : IProductService
@@ -11,47 +13,47 @@ namespace RetailInventoryAPI.Services
             _context = context;
         }
 
-        public IEnumerable<Product> GetAllProducts()
+        public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
-            return _context.Products.ToList();
+            return await _context.Products.ToListAsync();
         }
-        public Product? GetProductById(int id)
+        public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return _context.Products.FirstOrDefault(p => p.Id == id);
+            return await _context.Products.FindAsync(id);
         }
 
-        public Product CreateProduct(Product product)
+        public async Task<Product> CreateProductAsync(Product product)
         {
             _context.Products.Add(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return product;
         }
 
-        public Product? UpdateProduct(int id, Product updatedProduct)
+        public async Task<Product?> UpdateProductAsync(int id, Product updatedProduct)
         {
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            var existingProduct = await _context.Products.FindAsync(id);
 
-            if (product == null)
+            if (existingProduct == null)
             {
                 return null;
             }
           
-            product.Name = updatedProduct.Name;
-            product.Quantity = updatedProduct.Quantity;
+            existingProduct.Name = updatedProduct.Name;
+            existingProduct.Quantity = updatedProduct.Quantity;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return product;
+            return existingProduct;
         }
-        public bool DeleteProduct(int id) {
-            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+        public async Task<bool> DeleteProductAsync(int id) {
+            var product = await _context.Products.FindAsync(id);
 
             if (product == null)
             {
                 return false;
             }
             _context.Products.Remove(product);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
     }

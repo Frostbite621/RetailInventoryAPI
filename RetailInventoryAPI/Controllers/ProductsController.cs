@@ -18,16 +18,16 @@ namespace RetailInventoryAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Product>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetAll()
         {
-            var products = _productService.GetAllProducts();
+            var products = await _productService.GetAllProductsAsync();
             return Ok(products);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Product> GetProduct(int id)
+        public async Task<ActionResult<Product>> GetById(int id)
         {
-            var product = _productService.GetProductById(id);
+            var product = await _productService.GetProductByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -38,38 +38,32 @@ namespace RetailInventoryAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Product> CreateProduct(Product product)
+        public async Task<ActionResult<Product>> Create(Product product)
         {
-            if (string.IsNullOrWhiteSpace(product.Name) || product.Quantity < 0)
-            {
-                return BadRequest("Invalid product data.");
-            }
-            var created = _productService.CreateProduct(product);
-            return CreatedAtAction(nameof(GetProduct), new { id = created.Id }, created);
+           
+            var createdProduct = await _productService.CreateProductAsync(product);
+            return CreatedAtAction(nameof(GetById), new { id = createdProduct.Id }, createdProduct);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Product> UpdateProduct(int id, Product updatedProduct)
+        public async Task<IActionResult> Update(int id, Product product)
         {
-            if (string.IsNullOrWhiteSpace(updatedProduct.Name) || updatedProduct.Quantity < 0)
-            {
-                return BadRequest("Invalid product data.");
-            }
+            
 
-            var updated = _productService.UpdateProduct(id,updatedProduct);
-            if (updated == null)
+            var updatedProduct = await _productService.UpdateProductAsync(id,product);
+            if (updatedProduct == null)
             {
                 return NotFound();
 
             }
 
-            return Ok(updated);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteProduct(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var deleted = _productService.DeleteProduct(id);
+            var deleted = await _productService.DeleteProductAsync(id);
             if (!deleted)
             {
                 return NotFound();

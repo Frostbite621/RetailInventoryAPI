@@ -1,14 +1,14 @@
-﻿using RetailInventoryAPI.DTOs;
+﻿
 using RetailInventoryAPI.Models;
 
 namespace RetailInventoryAPI.Services
 {
     public interface IProductService
     {
-        IEnumerable<Product> GetAllProducts();
-        Product? GetProductById(int id);
-        Product CreateProduct(Product product);
-        Product? UpdateProduct(int id, Product updatedProduct);
-        bool DeleteProduct(int id);
+        Task<IEnumerable<Product>> GetAllProductsAsync();
+        Task<Product?> GetProductByIdAsync(int id);
+        Task<Product> CreateProductAsync(Product product);
+        Task<Product?> UpdateProductAsync(int id, Product updatedProduct);
+        Task<bool> DeleteProductAsync(int id);
     }
 }

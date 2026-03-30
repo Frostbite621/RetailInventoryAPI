@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RetailInventoryAPI.Data;
 using RetailInventoryAPI.Models;
@@ -13,7 +14,7 @@ namespace RetailInventoryAPI.Tests
         private ProductService CreateService()
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
             var context = new AppDbContext(options);
@@ -21,47 +22,38 @@ namespace RetailInventoryAPI.Tests
         }
 
         [Fact]
-        public void GetProductById_ReturnsNull_WhenMissing()
+        public async Task GetProductByIdAsync_ReturnsNull_WhenMissing()
         {
-            // Arrange
             var service = CreateService();
 
-            // Act
-            var result = service.GetProductById(999);
+            var result = await service.GetProductByIdAsync(999);
 
-            // Assert
             Assert.Null(result);
         }
 
         [Fact]
-        public void CreateProduct_AssignsId_AndAddsToDatabase()
+        public async Task CreateProductAsync_AssignsId_AndAddsToDatabase()
         {
-            // Arrange
             var service = CreateService();
             var newProduct = new Product { Name = "HDMI Cable", Quantity = 10 };
 
-            // Act
-            var created = service.CreateProduct(newProduct);
-            var all = service.GetAllProducts().ToList();
+            var created = await service.CreateProductAsync(newProduct);
+            var all = (await service.GetAllProductsAsync()).ToList();
 
-            // Assert
             Assert.True(created.Id > 0);
             Assert.Contains(all, p => p.Id == created.Id);
             Assert.Contains(all, p => p.Name == "HDMI Cable" && p.Quantity == 10);
         }
 
         [Fact]
-        public void UpdateProduct_UpdatesExistingProduct()
+        public async Task UpdateProductAsync_UpdatesExistingProduct()
         {
-            // Arrange
             var service = CreateService();
-            var created = service.CreateProduct(new Product { Name = "Old Name", Quantity = 1 });
+            var created = await service.CreateProductAsync(new Product { Name = "Old Name", Quantity = 1 });
             var updatedData = new Product { Name = "New Name", Quantity = 99 };
 
-            // Act
-            var updated = service.UpdateProduct(created.Id, updatedData);
+            var updated = await service.UpdateProductAsync(created.Id, updatedData);
 
-            // Assert
             Assert.NotNull(updated);
             Assert.Equal(created.Id, updated!.Id);
             Assert.Equal("New Name", updated.Name);
@@ -69,31 +61,25 @@ namespace RetailInventoryAPI.Tests
         }
 
         [Fact]
-        public void DeleteProduct_RemovesProduct_WhenExists()
+        public async Task DeleteProductAsync_RemovesProduct_WhenExists()
         {
-            // Arrange
             var service = CreateService();
-            var created = service.CreateProduct(new Product { Name = "To Delete", Quantity = 5 });
+            var created = await service.CreateProductAsync(new Product { Name = "To Delete", Quantity = 5 });
 
-            // Act
-            var deleted = service.DeleteProduct(created.Id);
-            var after = service.GetProductById(created.Id);
+            var deleted = await service.DeleteProductAsync(created.Id);
+            var after = await service.GetProductByIdAsync(created.Id);
 
-            // Assert
             Assert.True(deleted);
             Assert.Null(after);
         }
 
         [Fact]
-        public void DeleteProduct_ReturnsFalse_WhenMissing()
+        public async Task DeleteProductAsync_ReturnsFalse_WhenMissing()
         {
-            // Arrange
             var service = CreateService();
 
-            // Act
-            var deleted = service.DeleteProduct(999);
+            var deleted = await service.DeleteProductAsync(999);
 
-            // Assert
             Assert.False(deleted);
         }
     }
